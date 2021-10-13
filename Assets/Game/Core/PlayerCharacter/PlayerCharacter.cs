@@ -5,7 +5,7 @@ using Rewired;
 
 public class PlayerCharacter : MonoBehaviour
 {
-    private ObjThree m_obj;
+    private PlatformerObject m_obj;
     private Player m_player;
     private const int PLAYER_ID = 0;
 
@@ -19,12 +19,13 @@ public class PlayerCharacter : MonoBehaviour
     private void Awake()
     {
         m_player = ReInput.players.GetPlayer(PLAYER_ID);
-        m_obj = GetComponent<ObjThree>();
+        m_obj = GetComponent<PlatformerObject>();
     }
 
     private void Update()
     {
-        m_inputJump = m_player.GetButtonDown("Jump");
+        if (m_player.GetButtonDown("Jump"))
+            m_inputJump = true;
     }
 
     private void FixedUpdate()
