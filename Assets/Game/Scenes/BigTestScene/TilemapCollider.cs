@@ -4,17 +4,16 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Reccy.DebugExtensions;
 
-public class PlatformerObject : MonoBehaviour
+// Resolves collisions against an obstacle tilemap
+public class TilemapCollider : MonoBehaviour
 {
-    private Vector2 m_velocity = Vector2.zero;
-    private Vector2 m_inputVelocity = Vector2.zero;
+    private Rigidbody2D m_rb;
 
     [SerializeField] private BoxCollider2D m_collisionBox;
     [SerializeField] private Tilemap m_obstacleTilemap;
     [SerializeField] private BoxCollider2D m_groundedCollisionBox;
-    [SerializeField] private float m_xDampening = 1.0f;
-    [SerializeField] private float m_yDampening = 1.0f;
-    [SerializeField] private float m_gravity = 9.81f;
+
+    private const float HALF_TILE_SIZE = 0.5f;
 
     private bool m_isGrounded = true;
     public bool IsGrounded => m_isGrounded;
@@ -25,57 +24,28 @@ public class PlatformerObject : MonoBehaviour
     private float UpEdgeY => AABB.max.y;
     private float DownEdgeY => AABB.min.y;
 
-    private bool IsMovingRight => m_velocity.x > 0;
-    private bool IsMovingLeft => m_velocity.x < 0;
-    private bool IsMovingUp => m_velocity.y > 0;
-    private bool IsMovingDown => m_velocity.y < 0;
+    private bool IsMovingRight => m_rb.velocity.x > 0;
+    private bool IsMovingLeft => m_rb.velocity.x < 0;
+    private bool IsMovingUp => m_rb.velocity.y > 0;
+    private bool IsMovingDown => m_rb.velocity.y < 0;
 
     private Vector3Int m_currentCellPosition;
     private Vector3Int CurrentCellPosition => m_currentCellPosition;
 
-    public void Move(Vector2 o)
+    private void Awake()
     {
-        m_inputVelocity = o;
+        m_rb = GetComponent<Rigidbody2D>();
     }
 
     private void FixedUpdate()
     {
         m_currentCellPosition = m_obstacleTilemap.WorldToCell(transform.position);
 
-        DampenVelocity();
-
-        ApplyGravity();
-
-        ApplyInput();
-
         ResolveCollisions();
 
         IsGroundedCheck();
 
-        transform.position += new Vector3(m_velocity.x, m_velocity.y, 0);
-    }
-
-    private void DampenVelocity()
-    {
-        if (m_inputVelocity.x == 0)
-        {
-            m_velocity.x *= m_xDampening;
-        }
-
-        if (m_inputVelocity.y == 0)
-        {
-            m_velocity.y *= m_yDampening;
-        }
-    }
-
-    private void ApplyGravity()
-    {
-        m_velocity += Vector2.down * m_gravity * Time.fixedDeltaTime;
-    }
-
-    private void ApplyInput()
-    {
-        m_velocity += m_inputVelocity * Time.fixedDeltaTime;
+        m_rb.MovePosition(m_rb.position + new Vector2(m_rb.velocity.x, m_rb.velocity.y));
     }
 
     private void ResolveCollisions()
@@ -154,14 +124,14 @@ public class PlatformerObject : MonoBehaviour
         {
             if (cellDir.x == -1) // Cell is to our left
             {
-                var otherRightEdge = otherCenterX + 0.5f;
-                overlapX = Mathf.Max(otherRightEdge - (LeftEdgeX + m_velocity.x), 0);
+                var otherRightEdge = otherCenterX + HALF_TILE_SIZE;
+                overlapX = Mathf.Max(otherRightEdge - (LeftEdgeX + m_rb.velocity.x), 0);
                 overlapCorrectionX = overlapX;
             }
             else if (cellDir.x == 1) // Cell is to our right
             {
-                var otherLeftEdge = otherCenterX - 0.5f;
-                overlapX = Mathf.Max((RightEdgeX + m_velocity.x) - otherLeftEdge, 0);
+                var otherLeftEdge = otherCenterX - HALF_TILE_SIZE;
+                overlapX = Mathf.Max((RightEdgeX + m_rb.velocity.x) - otherLeftEdge, 0);
                 overlapCorrectionX = -overlapX;
             }
             else
@@ -172,14 +142,14 @@ public class PlatformerObject : MonoBehaviour
 
             if (cellDir.y == 1) // Cell is above
             {
-                var otherDownEdge = otherCenterY - 0.5f;
-                overlapY = Mathf.Max((UpEdgeY + m_velocity.y) - otherDownEdge, 0);
+                var otherDownEdge = otherCenterY - HALF_TILE_SIZE;
+                overlapY = Mathf.Max((UpEdgeY + m_rb.velocity.y) - otherDownEdge, 0);
                 overlapCorrectionY = -overlapY;
             }
             else if (cellDir.y == -1) // Cell is below
             {
-                var otherUpEdge = otherCenterY + 0.5f;
-                overlapY = Mathf.Max(otherUpEdge - (DownEdgeY + m_velocity.y), 0);
+                var otherUpEdge = otherCenterY + HALF_TILE_SIZE;
+                overlapY = Mathf.Max(otherUpEdge - (DownEdgeY + m_rb.velocity.y), 0);
                 overlapCorrectionY = overlapY;
             }
             else
@@ -192,11 +162,11 @@ public class PlatformerObject : MonoBehaviour
         // Correct cell on the axis of least displacement
         if (overlapX > overlapY)
         {
-             m_velocity = new Vector2(m_velocity.x, m_velocity.y + overlapCorrectionY);
+            m_rb.velocity = new Vector2(m_rb.velocity.x, m_rb.velocity.y + overlapCorrectionY);
         }
         else
         {
-            m_velocity = new Vector2(m_velocity.x + overlapCorrectionX, m_velocity.y);
+            m_rb.velocity = new Vector2(m_rb.velocity.x + overlapCorrectionX, m_rb.velocity.y);
         }
     }
 
@@ -207,20 +177,43 @@ public class PlatformerObject : MonoBehaviour
 
     private void IsGroundedCheck()
     {
+        Vector3Int downLeftTilePos = CurrentCellPosition + Vector3Int.down + Vector3Int.left;
         Vector3Int downTilePos = CurrentCellPosition + Vector3Int.down;
+        Vector3Int downRightTilePos = CurrentCellPosition + Vector3Int.down + Vector3Int.right;
 
-        if (m_obstacleTilemap.GetTile(downTilePos) == null)
+        if (m_obstacleTilemap.GetTile(downTilePos) != null)
         {
-            m_isGrounded = false;
-            return;
+            if (DownEdgeY <= (m_obstacleTilemap.GetCellCenterWorld(downTilePos).y + HALF_TILE_SIZE))
+            {
+                m_isGrounded = true;
+                return;
+            }
         }
 
-        if (DownEdgeY > (m_obstacleTilemap.GetCellCenterWorld(downTilePos).y + 0.5f))
+        if (m_obstacleTilemap.GetTile(downLeftTilePos) != null)
         {
-            m_isGrounded = false;
-            return;
+            if (LeftEdgeX < (m_obstacleTilemap.GetCellCenterWorld(downLeftTilePos).x + HALF_TILE_SIZE))
+            {
+                if (DownEdgeY <= (m_obstacleTilemap.GetCellCenterWorld(downLeftTilePos).y + HALF_TILE_SIZE))
+                {
+                    m_isGrounded = true;
+                    return;
+                }
+            }
         }
 
-        m_isGrounded = true;
+        if (m_obstacleTilemap.GetTile(downRightTilePos) != null)
+        {
+            if (RightEdgeX > (m_obstacleTilemap.GetCellCenterWorld(downRightTilePos).x - HALF_TILE_SIZE))
+            {
+                if (DownEdgeY <= (m_obstacleTilemap.GetCellCenterWorld(downRightTilePos).y + HALF_TILE_SIZE))
+                {
+                    m_isGrounded = true;
+                    return;
+                }
+            }
+        }
+
+        m_isGrounded = false;
     }
 }
