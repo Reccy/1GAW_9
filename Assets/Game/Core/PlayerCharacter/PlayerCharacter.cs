@@ -11,10 +11,13 @@ public class PlayerCharacter : MonoBehaviour
     private const int PLAYER_ID = 0;
 
     [SerializeField] private float m_jumpImpulse = 0.5f;
-    [SerializeField] private float m_horizontalSpeed = 0.2f;
+    [SerializeField] private float m_accelerationRate = 1.0f;
+    [SerializeField] private float m_maxHorizontalSpeed = 5.0f;
+    [SerializeField] private float m_decelerationRate = 1.0f;
     [SerializeField] private float m_gravity = 1.0f;
     [SerializeField] private float m_jumpGravity = 0.5f;
     [SerializeField] private float m_coyoteTimeSeconds = 0.01f;
+    [SerializeField] private float m_inputBufferSeconds = 0.1f;
     private PlayerCharacterSprite m_playerSprite;
 
     private float m_timeAirborne = 0.0f;
@@ -27,7 +30,11 @@ public class PlayerCharacter : MonoBehaviour
 
     #region INPUT
     private bool m_inputJumpDown = false;
+    private float m_inputJumpDownBuffer = 0.0f;
     private bool m_inputJumpHeld = false;
+
+    private const string JUMP = "Jump";
+    private const string MOVE_HORIZONTAL = "MoveHorizontal";
     #endregion
 
     private enum JumpState { NOT_STARTED, JUMPING, FALLING }
@@ -43,34 +50,72 @@ public class PlayerCharacter : MonoBehaviour
 
     private void Update()
     {
-        if (m_player.GetButtonDown("Jump"))
+        if (m_player.GetButtonDown(JUMP))
+        {
+            m_inputJumpDownBuffer = m_inputBufferSeconds;
             m_inputJumpDown = true;
+        }
 
-        m_inputJumpHeld = m_player.GetButton("Jump");
+        m_inputJumpHeld = m_player.GetButton(JUMP);
     }
 
     private void FixedUpdate()
     {
-        Vector2 move = new Vector2(m_player.GetAxis("MoveHorizontal") * m_horizontalSpeed, 0);
+        HandleRunning();
 
         HandleJumping();
+    }
 
-        velocity = new Vector2(move.x * Time.fixedDeltaTime, velocity.y);
+    private void HandleRunning()
+    {
+        float moveInput = m_player.GetAxis(MOVE_HORIZONTAL);
+
+        float acceleration = moveInput * m_accelerationRate * Time.fixedDeltaTime;
+        float deceleration = m_decelerationRate * Time.fixedDeltaTime;
+
+        float xVel = velocity.x;
+        
+        if (velocity.x > 0 && moveInput <= 0)
+        {
+            xVel -= deceleration;
+
+            if (xVel <= 0)
+                xVel = 0;
+        }
+        else if (velocity.x < 0 && moveInput >= 0)
+        {
+            xVel += deceleration;
+
+            if (xVel >= 0)
+                xVel = 0;
+        }
+
+        xVel += acceleration;
+
+        xVel = Mathf.Clamp(xVel, -m_maxHorizontalSpeed * Time.fixedDeltaTime, m_maxHorizontalSpeed * Time.fixedDeltaTime);
+
+        velocity = new Vector2(xVel, velocity.y);
     }
 
     private void HandleJumping()
     {
         if (m_inputJumpDown)
         {
-            if (m_timeAirborne <= m_coyoteTimeSeconds && m_jumpState == JumpState.NOT_STARTED)
+            bool doJump = m_timeAirborne <= m_coyoteTimeSeconds && m_jumpState == JumpState.NOT_STARTED;
+
+            if (doJump)
             {
                 velocity = new Vector2(velocity.x, m_jumpImpulse * Time.fixedDeltaTime);
                 m_playerSprite.PlayJumpAnim();
                 m_jumpState = JumpState.JUMPING;
             }
 
-            m_inputJumpDown = false;
+            if (doJump || m_inputJumpDownBuffer <= 0)
+                m_inputJumpDown = false;
         }
+        
+        m_inputJumpDownBuffer -= Time.fixedDeltaTime;
+        m_inputJumpDownBuffer = Mathf.Max(m_inputJumpDownBuffer, 0);
 
         // Jumping -> Falling when get to jump apex
         if (m_jumpState == JumpState.JUMPING)

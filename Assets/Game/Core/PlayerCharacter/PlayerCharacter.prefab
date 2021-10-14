@@ -193,10 +193,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39edc9fd654e64f48bb3977e6a22cb67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_jumpImpulse: 25
-  m_horizontalSpeed: 10
+  m_jumpImpulse: 15
+  m_accelerationRate: 0.8
+  m_maxHorizontalSpeed: 12
+  m_decelerationRate: 0.8
   m_gravity: 1
-  m_jumpGravity: 0.4
+  m_jumpGravity: 0.28
   m_coyoteTimeSeconds: 0.05
 --- !u!50 &1217132676974755073
 Rigidbody2D:
