@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Reccy.DebugExtensions;
+using Reccy.ScriptExtensions;
 
 // Resolves collisions against an obstacle tilemap
 public class TilemapCollider : MonoBehaviour
@@ -14,6 +15,7 @@ public class TilemapCollider : MonoBehaviour
     [SerializeField] private BoxCollider2D m_groundedCollisionBox;
 
     private const float HALF_TILE_SIZE = 0.5f;
+    private const float GROUNDED_TOLERANCE = 0.0001f;
 
     private bool m_isGrounded = true;
     public bool IsGrounded => m_isGrounded;
@@ -183,7 +185,9 @@ public class TilemapCollider : MonoBehaviour
 
         if (m_obstacleTilemap.GetTile(downTilePos) != null)
         {
-            if (DownEdgeY <= (m_obstacleTilemap.GetCellCenterWorld(downTilePos).y + HALF_TILE_SIZE))
+            var expr = (m_obstacleTilemap.GetCellCenterWorld(downTilePos).y + HALF_TILE_SIZE);
+
+            if (DownEdgeY < expr || Mathf2.Approximately(DownEdgeY, expr, GROUNDED_TOLERANCE))
             {
                 m_isGrounded = true;
                 return;
@@ -194,7 +198,9 @@ public class TilemapCollider : MonoBehaviour
         {
             if (LeftEdgeX < (m_obstacleTilemap.GetCellCenterWorld(downLeftTilePos).x + HALF_TILE_SIZE))
             {
-                if (DownEdgeY <= (m_obstacleTilemap.GetCellCenterWorld(downLeftTilePos).y + HALF_TILE_SIZE))
+                var expr = (m_obstacleTilemap.GetCellCenterWorld(downLeftTilePos).y + HALF_TILE_SIZE);
+
+                if (DownEdgeY < expr || Mathf2.Approximately(DownEdgeY, expr, GROUNDED_TOLERANCE))
                 {
                     m_isGrounded = true;
                     return;
@@ -206,7 +212,9 @@ public class TilemapCollider : MonoBehaviour
         {
             if (RightEdgeX > (m_obstacleTilemap.GetCellCenterWorld(downRightTilePos).x - HALF_TILE_SIZE))
             {
-                if (DownEdgeY <= (m_obstacleTilemap.GetCellCenterWorld(downRightTilePos).y + HALF_TILE_SIZE))
+                var expr = (m_obstacleTilemap.GetCellCenterWorld(downRightTilePos).y + HALF_TILE_SIZE);
+
+                if (DownEdgeY < expr || Mathf2.Approximately(DownEdgeY, expr, GROUNDED_TOLERANCE))
                 {
                     m_isGrounded = true;
                     return;

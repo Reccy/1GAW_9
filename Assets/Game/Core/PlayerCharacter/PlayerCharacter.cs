@@ -15,6 +15,7 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private float m_gravity = 1.0f;
     [SerializeField] private float m_jumpGravity = 0.5f;
     [SerializeField] private float m_coyoteTimeSeconds = 0.01f;
+    private PlayerCharacterSprite m_playerSprite;
 
     private float m_timeAirborne = 0.0f;
 
@@ -25,7 +26,8 @@ public class PlayerCharacter : MonoBehaviour
     }
 
     #region INPUT
-    private bool m_inputJump = false;
+    private bool m_inputJumpDown = false;
+    private bool m_inputJumpHeld = false;
     #endregion
 
     private enum JumpState { NOT_STARTED, JUMPING, FALLING }
@@ -36,12 +38,15 @@ public class PlayerCharacter : MonoBehaviour
         m_player = ReInput.players.GetPlayer(PLAYER_ID);
         m_obj = GetComponent<TilemapCollider>();
         m_rb = GetComponent<Rigidbody2D>();
+        m_playerSprite = GetComponentInChildren<PlayerCharacterSprite>();
     }
 
     private void Update()
     {
         if (m_player.GetButtonDown("Jump"))
-            m_inputJump = true;
+            m_inputJumpDown = true;
+
+        m_inputJumpHeld = m_player.GetButton("Jump");
     }
 
     private void FixedUpdate()
@@ -55,17 +60,16 @@ public class PlayerCharacter : MonoBehaviour
 
     private void HandleJumping()
     {
-        if (m_inputJump)
+        if (m_inputJumpDown)
         {
             if (m_timeAirborne <= m_coyoteTimeSeconds && m_jumpState == JumpState.NOT_STARTED)
             {
-                Debug.Log(m_timeAirborne);
-
                 velocity = new Vector2(velocity.x, m_jumpImpulse * Time.fixedDeltaTime);
+                m_playerSprite.PlayJumpAnim();
                 m_jumpState = JumpState.JUMPING;
             }
 
-            m_inputJump = false;
+            m_inputJumpDown = false;
         }
 
         // Jumping -> Falling when get to jump apex
@@ -78,6 +82,11 @@ public class PlayerCharacter : MonoBehaviour
         // Jumping -> Not started when grounded
         if (m_obj.IsGrounded && m_jumpState != JumpState.JUMPING)
         {
+            if (m_timeAirborne > 0)
+            {
+                m_playerSprite.PlayLandAnim();
+            }
+
             m_timeAirborne = 0;
             m_jumpState = JumpState.NOT_STARTED;
         }
@@ -87,7 +96,7 @@ public class PlayerCharacter : MonoBehaviour
 
             m_timeAirborne += Time.fixedDeltaTime;
 
-            if (m_jumpState == JumpState.JUMPING)
+            if (m_jumpState == JumpState.JUMPING && m_inputJumpHeld)
                 velocity += Vector2.down * m_jumpGravity * Time.fixedDeltaTime;
             else
                 velocity += Vector2.down * m_gravity * Time.fixedDeltaTime;
