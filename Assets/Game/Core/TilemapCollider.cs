@@ -32,7 +32,7 @@ public class TilemapCollider : MonoBehaviour
     private bool IsMovingDown => m_rb.velocity.y < 0;
 
     private Vector3Int m_currentCellPosition;
-    private Vector3Int CurrentCellPosition => m_currentCellPosition;
+    public Vector3Int CurrentCellPosition => m_currentCellPosition;
 
     private void Awake()
     {

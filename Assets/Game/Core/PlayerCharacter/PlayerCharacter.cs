@@ -20,6 +20,8 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private float m_inputBufferSeconds = 0.1f;
     private PlayerCharacterSprite m_playerSprite;
 
+    public Vector3Int CurrentCell => m_obj.CurrentCellPosition;
+
     private float m_timeAirborne = 0.0f;
 
     private Vector2 velocity
@@ -105,9 +107,7 @@ public class PlayerCharacter : MonoBehaviour
 
             if (doJump)
             {
-                velocity = new Vector2(velocity.x, m_jumpImpulse * Time.fixedDeltaTime);
-                m_playerSprite.PlayJumpAnim();
-                m_jumpState = JumpState.JUMPING;
+                Jump();
             }
 
             if (doJump || m_inputJumpDownBuffer <= 0)
@@ -146,5 +146,12 @@ public class PlayerCharacter : MonoBehaviour
             else
                 velocity += Vector2.down * m_gravity * Time.fixedDeltaTime;
         }
+    }
+
+    private void Jump()
+    {
+        velocity = new Vector2(velocity.x, m_jumpImpulse * Time.fixedDeltaTime);
+        m_playerSprite.PlayJumpAnim();
+        m_jumpState = JumpState.JUMPING;
     }
 }
