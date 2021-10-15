@@ -13,6 +13,7 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private float m_jumpImpulse = 0.5f;
     [SerializeField] private float m_accelerationRate = 1.0f;
     [SerializeField] private float m_maxHorizontalSpeed = 5.0f;
+    [SerializeField] private float m_maxVerticalSpeed = 100.0f;
     [SerializeField] private float m_decelerationRate = 1.0f;
     [SerializeField] private float m_gravity = 1.0f;
     [SerializeField] private float m_jumpGravity = 0.5f;
@@ -117,10 +118,12 @@ public class PlayerCharacter : MonoBehaviour
         m_inputJumpDownBuffer -= Time.fixedDeltaTime;
         m_inputJumpDownBuffer = Mathf.Max(m_inputJumpDownBuffer, 0);
 
+        float yVel = velocity.y;
+
         // Jumping -> Falling when get to jump apex
         if (m_jumpState == JumpState.JUMPING)
         {
-            if (velocity.y < 0)
+            if (yVel < 0)
                 m_jumpState = JumpState.FALLING;
         }
 
@@ -142,10 +145,13 @@ public class PlayerCharacter : MonoBehaviour
             m_timeAirborne += Time.fixedDeltaTime;
 
             if (m_jumpState == JumpState.JUMPING && m_inputJumpHeld)
-                velocity += Vector2.down * m_jumpGravity * Time.fixedDeltaTime;
+                yVel -= m_jumpGravity * Time.fixedDeltaTime;
             else
-                velocity += Vector2.down * m_gravity * Time.fixedDeltaTime;
+                yVel -= m_gravity * Time.fixedDeltaTime;
         }
+
+        yVel = Mathf.Clamp(yVel, -m_maxVerticalSpeed * Time.fixedDeltaTime, m_maxVerticalSpeed * Time.fixedDeltaTime);
+        velocity = new Vector2(velocity.x, yVel);
     }
 
     private void Jump()
