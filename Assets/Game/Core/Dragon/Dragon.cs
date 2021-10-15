@@ -7,6 +7,8 @@ public class Dragon : MonoBehaviour
 {
     [SerializeField] private float m_t;
     [SerializeField] private DragonPathSegment m_currentSegment;
+    [SerializeField] private Transform[] m_segments;
+    [SerializeField] private float m_distanceBetweenSegments = 0.25f;
 
     private float m_currentDistance;
     
@@ -43,11 +45,27 @@ public class Dragon : MonoBehaviour
     private void UpdatePosition()
     {
         m_t = Curve.T(m_currentDistance);
-        
-        transform.position = Curve.Point(m_t);
 
-        var rot = Curve.Tangent(m_t);
+        float distAcc = 0;
 
-        transform.rotation = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.up, rot));
+        foreach (var bodySegment in m_segments)
+        {
+            var lineSegment = m_currentSegment;
+            var d = m_currentDistance + distAcc;
+
+            while (d > lineSegment.Curve.Length)
+            {
+                d -= lineSegment.Curve.Length;
+                lineSegment = lineSegment.Next;
+            }
+
+            bodySegment.position = lineSegment.Curve.PointDist(d);
+
+            var rot = lineSegment.Curve.TangentDist(d);
+
+            bodySegment.rotation = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.up, rot));
+
+            distAcc += m_distanceBetweenSegments;
+        }
     }
 }
