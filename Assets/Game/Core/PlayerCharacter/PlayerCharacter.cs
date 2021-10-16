@@ -92,7 +92,13 @@ public class PlayerCharacter : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Hurtbox"))
         {
-            if (!m_dead)
+            if (m_dead)
+                return;
+
+            DragonProjectile prj = collision.GetComponent<DragonProjectile>();
+
+            // Prevents hit projectile from hurting the player
+            if (prj == null || !prj.HitByPlayer)
                 Die((collision.gameObject.transform.position - transform.position).normalized);
         }
     }
