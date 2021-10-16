@@ -12,7 +12,7 @@ public class TilemapCollider : MonoBehaviour
 
     [SerializeField] private BoxCollider2D m_collisionBox;
     [SerializeField] private Tilemap m_obstacleTilemap;
-    [SerializeField] private BoxCollider2D m_groundedCollisionBox;
+    public void SetTilemap(Tilemap tilemap) => m_obstacleTilemap = tilemap;
 
     private const float HALF_TILE_SIZE = 0.5f;
     private const float GROUNDED_TOLERANCE = 0.0001f;
@@ -33,6 +33,9 @@ public class TilemapCollider : MonoBehaviour
 
     private Vector3Int m_currentCellPosition;
     public Vector3Int CurrentCellPosition => m_currentCellPosition;
+
+    public delegate void OnTilemapCollidedEvent();
+    public OnTilemapCollidedEvent OnTilemapCollided;
 
     private void Awake()
     {
@@ -159,6 +162,11 @@ public class TilemapCollider : MonoBehaviour
                 overlapY = 1;
                 overlapCorrectionY = 1;
             }
+        }
+
+        if (OnTilemapCollided != null && (overlapCorrectionX != 0 || overlapCorrectionY != 0))
+        {
+            OnTilemapCollided();
         }
 
         // Correct cell on the axis of least displacement

@@ -30,6 +30,30 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private GameObject m_deathSpriteObject;
     [SerializeField] private AudioClip m_deathSFX;
 
+    [Header("Attacks")]
+    [SerializeField] private int m_attackCooldownFrames = 12;
+    [SerializeField] private int m_attackSpriteRemainFrames = 3;
+    
+    [SerializeField] private GameObject m_attackLeftSprite;
+    [SerializeField] private GameObject m_attackLeftCollider;
+    
+    [SerializeField] private GameObject m_attackRightSprite;
+    [SerializeField] private GameObject m_attackRightCollider;
+    
+    [SerializeField] private GameObject m_attackLeftJumpSprite;
+    [SerializeField] private GameObject m_attackLeftJumpCollider;
+    
+    [SerializeField] private GameObject m_attackRightJumpSprite;
+    [SerializeField] private GameObject m_attackRightJumpCollider;
+    
+    [SerializeField] private GameObject m_attackLeftFallSprite;
+    [SerializeField] private GameObject m_attackLeftFallCollider;
+
+    [SerializeField] private GameObject m_attackRightFallSprite;
+    [SerializeField] private GameObject m_attackRightFallCollider;
+
+    private Coroutine m_attackCoroutine;
+    
     private PlayerCharacterSprite m_playerSprite;
 
     private bool m_facingRight = false; // If false, facing left
@@ -52,8 +76,11 @@ public class PlayerCharacter : MonoBehaviour
     private float m_inputJumpDownBuffer = 0.0f;
     private bool m_inputJumpHeld = false;
 
+    private bool m_inputAttackDown = false;
+
     private const string JUMP = "Jump";
     private const string MOVE_HORIZONTAL = "MoveHorizontal";
+    private const string ATTACK = "Attack";
     #endregion
 
     public enum JumpState { NOT_STARTED, JUMPING, FALLING }
@@ -88,6 +115,11 @@ public class PlayerCharacter : MonoBehaviour
                 m_inputJumpDown = true;
             }
 
+            if (m_player.GetButtonDown(ATTACK))
+            {
+                m_inputAttackDown = true;
+            }
+
             m_inputJumpHeld = m_player.GetButton(JUMP);
         }
         else
@@ -98,9 +130,95 @@ public class PlayerCharacter : MonoBehaviour
 
     private void FixedUpdate()
     {
+        HandleAttack();
+        
         HandleRunning();
 
         HandleJumping();
+    }
+
+    private void HandleAttack()
+    {
+        if (!m_inputAttackDown)
+            return;
+
+        m_inputAttackDown = false;
+
+        if (m_attackCoroutine == null)
+        {
+            m_attackCoroutine = StartCoroutine(HandleAttackCoroutine());
+        }
+    }
+
+    private IEnumerator HandleAttackCoroutine()
+    {
+        if (velocity.y == 0) // on ground
+        {
+            if (m_facingRight)
+            {
+                m_attackRightSprite.SetActive(true);
+                m_attackRightCollider.SetActive(true);
+            }
+            else
+            {
+                m_attackLeftSprite.SetActive(true);
+                m_attackLeftCollider.SetActive(true);
+            }
+        }
+        else if (velocity.y > 0) // jumping up
+        {
+            if (m_facingRight)
+            {
+                m_attackRightJumpSprite.SetActive(true);
+                m_attackRightJumpCollider.SetActive(true);
+            }
+            else
+            {
+                m_attackLeftJumpSprite.SetActive(true);
+                m_attackLeftJumpCollider.SetActive(true);
+            }
+        }
+        else // falling down
+        {
+            if (m_facingRight)
+            {
+                m_attackRightJumpSprite.SetActive(true);
+                m_attackRightJumpCollider.SetActive(true);
+            }
+            else
+            {
+                m_attackLeftJumpSprite.SetActive(true);
+                m_attackLeftJumpCollider.SetActive(true);
+            }
+        }
+
+        yield return new WaitForFixedUpdate();
+
+        m_attackLeftCollider.SetActive(false);
+        m_attackRightCollider.SetActive(false);
+        m_attackLeftFallCollider.SetActive(false);
+        m_attackRightFallCollider.SetActive(false);
+        m_attackLeftJumpCollider.SetActive(false);
+        m_attackRightJumpCollider.SetActive(false);
+
+        for (int i = 0; i < m_attackSpriteRemainFrames; ++i)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        m_attackLeftSprite.SetActive(false);
+        m_attackRightSprite.SetActive(false);
+        m_attackLeftFallSprite.SetActive(false);
+        m_attackRightFallSprite.SetActive(false);
+        m_attackLeftJumpSprite.SetActive(false);
+        m_attackRightJumpSprite.SetActive(false);
+
+        for (int i = 0; i < m_attackCooldownFrames; ++i)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        m_attackCoroutine = null;
     }
 
     private void HandleRunning()
