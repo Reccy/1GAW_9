@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Reccy.UnityBezierCurve;
 using Reccy.DebugExtensions;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [SelectionBase]
 public class DragonPathSegment : MonoBehaviour
@@ -79,6 +81,7 @@ public class DragonPathSegment : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         m_curve = new BezierCurve(m_pointA, m_pointB, m_pointC, m_pointD);
@@ -103,4 +106,5 @@ public class DragonPathSegment : MonoBehaviour
             Debug2.DrawArrow(m_curve.Point(0.5f), m_next.m_curve.Point(0.5f), Color.green);
         }
     }
+#endif
 }

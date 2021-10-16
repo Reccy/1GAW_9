@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
+using UnityEngine.SceneManagement;
 
 public class PlayerCharacter : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class PlayerCharacter : MonoBehaviour
     private Player m_player;
     private const int PLAYER_ID = 0;
 
+    private AudioSource m_audioSource;
+    private bool m_dead = false;
+    public bool Dead => m_dead;
+
+    [Header("Handling")]
     [SerializeField] private float m_jumpImpulse = 0.5f;
     [SerializeField] private float m_accelerationRate = 1.0f;
     [SerializeField] private float m_maxHorizontalSpeed = 5.0f;
@@ -19,7 +25,15 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private float m_jumpGravity = 0.5f;
     [SerializeField] private float m_coyoteTimeSeconds = 0.01f;
     [SerializeField] private float m_inputBufferSeconds = 0.1f;
+
+    [Header("Juice")]
+    [SerializeField] private GameObject m_deathSpriteObject;
+    [SerializeField] private AudioClip m_deathSFX;
+
     private PlayerCharacterSprite m_playerSprite;
+
+    private bool m_facingRight = false; // If false, facing left
+    public bool FacingRight => m_facingRight;
 
     public Vector3Int CurrentCell => m_obj.CurrentCellPosition;
 
@@ -31,6 +45,8 @@ public class PlayerCharacter : MonoBehaviour
         set => m_rb.velocity = value;
     }
 
+    public Vector2 Velocity => velocity;
+
     #region INPUT
     private bool m_inputJumpDown = false;
     private float m_inputJumpDownBuffer = 0.0f;
@@ -40,8 +56,18 @@ public class PlayerCharacter : MonoBehaviour
     private const string MOVE_HORIZONTAL = "MoveHorizontal";
     #endregion
 
-    private enum JumpState { NOT_STARTED, JUMPING, FALLING }
+    public enum JumpState { NOT_STARTED, JUMPING, FALLING }
     private JumpState m_jumpState = JumpState.NOT_STARTED;
+    public JumpState JumpingState => m_jumpState;
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.GetComponentInParent<Dragon>() != null)
+        {
+            if (!m_dead)
+                Die((collision.gameObject.transform.position - transform.position).normalized);
+        }
+    }
 
     private void Awake()
     {
@@ -49,17 +75,25 @@ public class PlayerCharacter : MonoBehaviour
         m_obj = GetComponent<TilemapCollider>();
         m_rb = GetComponent<Rigidbody2D>();
         m_playerSprite = GetComponentInChildren<PlayerCharacterSprite>();
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        if (m_player.GetButtonDown(JUMP))
+        if (!m_dead)
         {
-            m_inputJumpDownBuffer = m_inputBufferSeconds;
-            m_inputJumpDown = true;
-        }
+            if (m_player.GetButtonDown(JUMP))
+            {
+                m_inputJumpDownBuffer = m_inputBufferSeconds;
+                m_inputJumpDown = true;
+            }
 
-        m_inputJumpHeld = m_player.GetButton(JUMP);
+            m_inputJumpHeld = m_player.GetButton(JUMP);
+        }
+        else
+        {
+            m_inputJumpHeld = false;
+        }
     }
 
     private void FixedUpdate()
@@ -73,11 +107,19 @@ public class PlayerCharacter : MonoBehaviour
     {
         float moveInput = m_player.GetAxis(MOVE_HORIZONTAL);
 
+        if (m_dead)
+            moveInput = 0;
+
         float acceleration = moveInput * m_accelerationRate * Time.fixedDeltaTime;
         float deceleration = m_decelerationRate * Time.fixedDeltaTime;
 
         float xVel = velocity.x;
         
+        if (xVel > 0)
+            m_facingRight = true;
+        else if (xVel < 0)
+            m_facingRight = false;
+
         if (velocity.x > 0 && moveInput <= 0)
         {
             xVel -= deceleration;
@@ -159,5 +201,43 @@ public class PlayerCharacter : MonoBehaviour
         velocity = new Vector2(velocity.x, m_jumpImpulse * Time.fixedDeltaTime);
         m_playerSprite.PlayJumpAnim();
         m_jumpState = JumpState.JUMPING;
+    }
+
+    private void Die(Vector3 dirToKiller)
+    {
+        m_dead = true;
+
+        float force = 5.0f;
+
+        GameObject deathSprite = Instantiate(m_deathSpriteObject);
+        deathSprite.transform.position = transform.position;
+        deathSprite.GetComponent<Rigidbody2D>().velocity = -dirToKiller * force;
+
+        GameObject deathSprite2 = Instantiate(m_deathSpriteObject);
+        deathSprite2.transform.position = transform.position;
+        deathSprite2.GetComponent<Rigidbody2D>().velocity = dirToKiller * force;
+
+        GameObject deathSprite3 = Instantiate(m_deathSpriteObject);
+        deathSprite3.transform.position = transform.position;
+        deathSprite3.GetComponent<Rigidbody2D>().velocity = new Vector3(dirToKiller.y, -dirToKiller.x) * force;
+
+        GameObject deathSprite4 = Instantiate(m_deathSpriteObject);
+        deathSprite4.transform.position = transform.position;
+        deathSprite4.GetComponent<Rigidbody2D>().velocity = new Vector3(-dirToKiller.y, dirToKiller.x) * force;
+
+        m_audioSource.PlayOneShot(m_deathSFX, 1.0f);
+
+        StartCoroutine(DieCoroutine());
+    }
+
+    private IEnumerator DieCoroutine()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        FindObjectOfType<ScreenWipe>().Wipe();
+
+        yield return new WaitForSeconds(2.0f);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
