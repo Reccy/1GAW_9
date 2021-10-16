@@ -100,7 +100,8 @@ MonoBehaviour:
   - {fileID: 6765279060776539896}
   - {fileID: 1315266418332166701}
   - {fileID: 6937671561920406828}
-  m_distanceBetweenSegments: 0.5
+  m_distanceBetweenSegments: 1.5
+  m_projectile: {fileID: 4350058970650889371, guid: 50c88942594abb249a5db29fc97bcecd, type: 3}
   m_speed: 20
 --- !u!1001 &53529200143187490
 PrefabInstance:

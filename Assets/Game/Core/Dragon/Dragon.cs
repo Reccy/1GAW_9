@@ -5,10 +5,14 @@ using Reccy.UnityBezierCurve;
 
 public class Dragon : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float m_t;
     [SerializeField] private DragonPathSegment m_currentSegment;
     [SerializeField] private Transform[] m_segments;
     [SerializeField] private float m_distanceBetweenSegments = 0.25f;
+
+    [Header("Projectiles")]
+    [SerializeField] private GameObject m_projectile;
 
     private float m_currentDistance;
     
