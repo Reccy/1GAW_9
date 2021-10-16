@@ -118,64 +118,71 @@ public class TilemapCollider : MonoBehaviour
 
         float overlapCorrectionX = 0;
         float overlapCorrectionY = 0;
-        float overlapX = 0;
-        float overlapY = 0;
+        float absOverlapX = 0;
+        float absOverlapY = 0;
         float otherCenterX = m_obstacleTilemap.GetCellCenterWorld(nextCellPos).x;
         float otherCenterY = m_obstacleTilemap.GetCellCenterWorld(nextCellPos).y;
 
         var cellDir = GetCellDir(nextCellPos);
+
+        bool correctedOverlap = false;
 
         if (otherTile != null)
         {
             if (cellDir.x == -1) // Cell is to our left
             {
                 var otherRightEdge = otherCenterX + HALF_TILE_SIZE;
-                overlapX = Mathf.Max(otherRightEdge - (LeftEdgeX + m_rb.velocity.x), 0);
-                overlapCorrectionX = overlapX;
+                absOverlapX = Mathf.Max(otherRightEdge - (LeftEdgeX + m_rb.velocity.x), 0);
+                overlapCorrectionX = absOverlapX;
+                correctedOverlap = true;
             }
             else if (cellDir.x == 1) // Cell is to our right
             {
                 var otherLeftEdge = otherCenterX - HALF_TILE_SIZE;
-                overlapX = Mathf.Max((RightEdgeX + m_rb.velocity.x) - otherLeftEdge, 0);
-                overlapCorrectionX = -overlapX;
+                absOverlapX = Mathf.Max((RightEdgeX + m_rb.velocity.x) - otherLeftEdge, 0);
+                overlapCorrectionX = -absOverlapX;
+                correctedOverlap = true;
             }
             else
             {
-                overlapX = 1;
+                absOverlapX = 1;
                 overlapCorrectionX = 1;
             }
 
             if (cellDir.y == 1) // Cell is above
             {
                 var otherDownEdge = otherCenterY - HALF_TILE_SIZE;
-                overlapY = Mathf.Max((UpEdgeY + m_rb.velocity.y) - otherDownEdge, 0);
-                overlapCorrectionY = -overlapY;
+                absOverlapY = Mathf.Max((UpEdgeY + m_rb.velocity.y) - otherDownEdge, 0);
+                overlapCorrectionY = -absOverlapY;
+                correctedOverlap = true;
             }
             else if (cellDir.y == -1) // Cell is below
             {
                 var otherUpEdge = otherCenterY + HALF_TILE_SIZE;
-                overlapY = Mathf.Max(otherUpEdge - (DownEdgeY + m_rb.velocity.y), 0);
-                overlapCorrectionY = overlapY;
+                absOverlapY = Mathf.Max(otherUpEdge - (DownEdgeY + m_rb.velocity.y), 0);
+                overlapCorrectionY = absOverlapY;
+                correctedOverlap = true;
             }
             else
             {
-                overlapY = 1;
+                absOverlapY = 1;
                 overlapCorrectionY = 1;
             }
         }
 
-        if (OnTilemapCollided != null && (overlapCorrectionX != 0 || overlapCorrectionY != 0))
-        {
-            OnTilemapCollided();
-        }
-
         // Correct cell on the axis of least displacement
-        if (overlapX > overlapY)
+        if (absOverlapX > absOverlapY)
         {
+            if (OnTilemapCollided != null && correctedOverlap && overlapCorrectionY != 0)
+                OnTilemapCollided();
+
             m_rb.velocity = new Vector2(m_rb.velocity.x, m_rb.velocity.y + overlapCorrectionY);
         }
         else
         {
+            if (OnTilemapCollided != null && correctedOverlap && overlapCorrectionY != 0)
+                OnTilemapCollided();
+
             m_rb.velocity = new Vector2(m_rb.velocity.x + overlapCorrectionX, m_rb.velocity.y);
         }
     }

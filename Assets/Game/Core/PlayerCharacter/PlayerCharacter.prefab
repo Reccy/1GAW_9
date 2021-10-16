@@ -108,7 +108,7 @@ Transform:
   m_GameObject: {fileID: 626004306223134259}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 6287986227396683882}
   - {fileID: 9195542568262775942}
@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2896946585610106959}
   - component: {fileID: 8377755516789816673}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,6 +171,63 @@ BoxCollider2D:
   m_AutoTiling: 0
   serializedVersion: 2
   m_Size: {x: 1.6746216, y: 2.3273811}
+  m_EdgeRadius: 0
+--- !u!1 &1044242276090563891
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6093914446364761453}
+  - component: {fileID: 723803790190545041}
+  m_Layer: 6
+  m_Name: Hitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6093914446364761453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044242276090563891}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4203868661933310444}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &723803790190545041
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044242276090563891}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 0.75}
   m_EdgeRadius: 0
 --- !u!1 &1106009775081470274
 GameObject:
@@ -265,7 +322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5869007974764713308}
   - component: {fileID: 2634521972910548218}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -373,7 +430,7 @@ Transform:
   m_GameObject: {fileID: 2266914297429777103}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 863249804680318908}
   - {fileID: 4418797383082124645}
@@ -409,7 +466,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4203868661933310444}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &4208282097644257144
 BoxCollider2D:
@@ -421,7 +478,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -462,7 +519,7 @@ Transform:
   m_GameObject: {fileID: 2516619833472882340}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 4882542416412669387}
   - {fileID: 7411093930341429266}
@@ -496,8 +553,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5933632171466841497}
   - {fileID: 7229973801881628351}
+  - {fileID: 6093914446364761453}
   m_Father: {fileID: 4666123597183156088}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -594,7 +651,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9195542568262775942}
   - component: {fileID: 208033439654836202}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -724,63 +781,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &4514115771670485125
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5933632171466841497}
-  - component: {fileID: 5802892353722576359}
-  m_Layer: 0
-  m_Name: Ground
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5933632171466841497
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4514115771670485125}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4203868661933310444}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &5802892353722576359
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4514115771670485125}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.52}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.9, y: 0.23170829}
-  m_EdgeRadius: 0
 --- !u!1 &4666123597183156095
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,7 +793,6 @@ GameObject:
   - component: {fileID: 5950251831446940815}
   - component: {fileID: 1217132676974755073}
   - component: {fileID: 4666123597183156089}
-  - component: {fileID: 268358318010239871}
   - component: {fileID: 2732312374735681307}
   m_Layer: 0
   m_Name: PlayerCharacter
@@ -843,19 +842,19 @@ MonoBehaviour:
   m_deathSpriteObject: {fileID: 1186243177772944723, guid: 4e6da0bcdcda7ef40be6b4ee7c318169, type: 3}
   m_deathSFX: {fileID: 8300000, guid: 5ff94079399448442a68fb3e0c6e7b3d, type: 3}
   m_attackCooldownFrames: 16
-  m_attackSpriteRemainFrames: 2
+  m_attackSpriteRemainFrames: 6
   m_attackLeftSprite: {fileID: 4284168016198355959}
   m_attackLeftCollider: {fileID: 5236411875827195153}
   m_attackRightSprite: {fileID: 8677788312350910133}
   m_attackRightCollider: {fileID: 3982287017808647691}
-  m_attackLeftJumpCollider: {fileID: 5219829863414208754}
   m_attackLeftJumpSprite: {fileID: 7212702835157986962}
-  m_attackRightJumpCollider: {fileID: 1152508584306745250}
+  m_attackLeftJumpCollider: {fileID: 5219829863414208754}
   m_attackRightJumpSprite: {fileID: 3232463393844705915}
-  m_attackLeftFallCollider: {fileID: 696568004831906482}
+  m_attackRightJumpCollider: {fileID: 1152508584306745250}
   m_attackLeftFallSprite: {fileID: 1106009775081470274}
-  m_attackRightFallCollider: {fileID: 9205641825549527708}
+  m_attackLeftFallCollider: {fileID: 696568004831906482}
   m_attackRightFallSprite: {fileID: 482446166850634752}
+  m_attackRightFallCollider: {fileID: 9205641825549527708}
 --- !u!50 &1217132676974755073
 Rigidbody2D:
   serializedVersion: 4
@@ -891,32 +890,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_collisionBox: {fileID: 4208282097644257144}
   m_obstacleTilemap: {fileID: 0}
---- !u!61 &268358318010239871
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4666123597183156095}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.8, y: 0.8}
-  m_EdgeRadius: 0
 --- !u!82 &2732312374735681307
 AudioSource:
   m_ObjectHideFlags: 0
@@ -927,7 +900,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 5ff94079399448442a68fb3e0c6e7b3d, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1145,7 +1118,7 @@ Transform:
   m_GameObject: {fileID: 5065292889852817901}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 3398023897553508088}
   - {fileID: 5869007974764713308}
@@ -1162,7 +1135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7411093930341429266}
   - component: {fileID: 3985048736633823909}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1219,7 +1192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3774394204681040966}
   - component: {fileID: 554149137881073606}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1291,7 +1264,7 @@ Transform:
   m_GameObject: {fileID: 6848552595628090326}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 7955791391653190381}
   - {fileID: 3774394204681040966}
@@ -1489,7 +1462,7 @@ Transform:
   m_GameObject: {fileID: 8938449302454316544}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children:
   - {fileID: 1428763387579932002}
   - {fileID: 2896946585610106959}
@@ -1506,7 +1479,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4418797383082124645}
   - component: {fileID: 1597741619724097178}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}

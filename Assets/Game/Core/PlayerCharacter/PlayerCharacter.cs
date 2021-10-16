@@ -89,7 +89,9 @@ public class PlayerCharacter : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponentInParent<Dragon>() != null)
+        Debug.Log(collision.gameObject.layer);
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Hurtbox"))
         {
             if (!m_dead)
                 Die((collision.gameObject.transform.position - transform.position).normalized);

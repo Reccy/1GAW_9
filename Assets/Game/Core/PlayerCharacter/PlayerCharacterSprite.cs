@@ -34,8 +34,8 @@ public class PlayerCharacterSprite : MonoBehaviour
 
     private void Update()
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one, m_lerpRate * Time.fixedDeltaTime);
-        transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, m_lerpRate * Time.fixedDeltaTime);
+        transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one, m_lerpRate * Time.deltaTime);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, m_lerpRate * Time.deltaTime);
 
         if (m_player.Dead)
         {
@@ -80,11 +80,11 @@ public class PlayerCharacterSprite : MonoBehaviour
         }
         else if (m_player.JumpingState == PlayerCharacter.JumpState.JUMPING)
         {
-
+            // todo
         }
         else if (m_player.JumpingState == PlayerCharacter.JumpState.FALLING)
         {
-
+            // todo
         }
 
     }
