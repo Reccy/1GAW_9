@@ -30,7 +30,6 @@ public class DragonProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject, collision.gameObject);
         if (collision.gameObject.layer == LayerMask.NameToLayer("Hurtbox"))
         {
             HandleAttack((collision.transform.position - transform.position).normalized);

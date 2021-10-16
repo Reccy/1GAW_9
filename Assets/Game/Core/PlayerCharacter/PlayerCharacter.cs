@@ -14,6 +14,7 @@ public class PlayerCharacter : MonoBehaviour
     private AudioSource m_audioSource;
     private bool m_dead = false;
     public bool Dead => m_dead;
+    private bool m_deadLand = false;
 
     [Header("Handling")]
     [SerializeField] private float m_jumpImpulse = 0.5f;
@@ -89,8 +90,6 @@ public class PlayerCharacter : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject.layer);
-
         if (collision.gameObject.layer == LayerMask.NameToLayer("Hurtbox"))
         {
             if (!m_dead)
@@ -233,6 +232,19 @@ public class PlayerCharacter : MonoBehaviour
         float acceleration = moveInput * m_accelerationRate * Time.fixedDeltaTime;
         float deceleration = m_decelerationRate * Time.fixedDeltaTime;
 
+        if (m_dead)
+        {
+            if (!m_deadLand)
+            {
+                deceleration = 0;
+                m_deadLand = m_obj.IsGrounded;
+            }
+            else
+            {
+                deceleration = m_decelerationRate * Time.fixedDeltaTime;
+            }
+        }
+
         float xVel = velocity.x;
         
         if (xVel > 0)
@@ -328,6 +340,8 @@ public class PlayerCharacter : MonoBehaviour
         m_dead = true;
 
         float force = 5.0f;
+
+        velocity = new Vector2(-velocity.x * 2, 0.5f);
 
         GameObject deathSprite = Instantiate(m_deathSpriteObject);
         deathSprite.transform.position = transform.position;
