@@ -183,13 +183,13 @@ public class PlayerCharacter : MonoBehaviour
         {
             if (m_facingRight)
             {
-                m_attackRightJumpSprite.SetActive(true);
-                m_attackRightJumpCollider.SetActive(true);
+                m_attackRightFallSprite.SetActive(true);
+                m_attackRightFallCollider.SetActive(true);
             }
             else
             {
-                m_attackLeftJumpSprite.SetActive(true);
-                m_attackLeftJumpCollider.SetActive(true);
+                m_attackLeftFallSprite.SetActive(true);
+                m_attackLeftFallCollider.SetActive(true);
             }
         }
 

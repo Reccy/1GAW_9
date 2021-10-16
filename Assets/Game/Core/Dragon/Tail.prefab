@@ -87,6 +87,7 @@ Transform:
   - {fileID: 8985472385698035265}
   - {fileID: 2076396359495865248}
   - {fileID: 3232760416851751696}
+  - {fileID: 8830088574375995064}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -230,3 +231,65 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &5085771489425418761
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1080154708130977872}
+    m_Modifications:
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9187576747855141371, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+      propertyPath: m_Name
+      value: DragonLight
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+--- !u!4 &8830088574375995064 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4332054918805867697, guid: 2f1aa68cf578351419a86802c4ab1dcb, type: 3}
+  m_PrefabInstance: {fileID: 5085771489425418761}
+  m_PrefabAsset: {fileID: 0}
