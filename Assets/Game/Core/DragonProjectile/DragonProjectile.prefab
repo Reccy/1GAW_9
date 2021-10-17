@@ -282,6 +282,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_hitForce: 50
   m_hitColor: {r: 1, g: 0, b: 0, a: 1}
+  m_curveballRate: 50
 --- !u!50 &1555449157218752564
 Rigidbody2D:
   serializedVersion: 4

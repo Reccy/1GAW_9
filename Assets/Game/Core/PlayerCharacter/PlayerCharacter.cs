@@ -376,7 +376,7 @@ public class PlayerCharacter : MonoBehaviour
 
         FindObjectOfType<ScreenWipe>().Wipe();
 
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.75f);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

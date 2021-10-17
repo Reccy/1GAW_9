@@ -9,6 +9,7 @@ public class Dragon : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float m_t;
     [SerializeField] private GameObject m_head;
+    [SerializeField] private GameObject m_tail;
     [SerializeField] private DragonPathSegment m_currentSegment;
     [SerializeField] private Transform[] m_segments;
     [SerializeField] private float m_distanceBetweenSegments = 0.25f;
@@ -18,6 +19,8 @@ public class Dragon : MonoBehaviour
     [SerializeField] private float m_shootVelocity = 2.0f;
     [SerializeField] private float m_chargeTime = 0.5f;
     [SerializeField] private float m_cooldownTime = 0.25f;
+
+    private EndSequence m_endSequence;
 
     private float m_currentDistance;
 
@@ -29,6 +32,8 @@ public class Dragon : MonoBehaviour
 
     private Coroutine m_shootCoroutine;
 
+    private int m_health;
+
     private void OnValidate()
     {
         if (m_currentSegment != null)
@@ -37,14 +42,76 @@ public class Dragon : MonoBehaviour
         }
     }
 
+    public GameObject GetClosestSegment(Vector2 position)
+    {
+        GameObject hitSegment = null;
+        float dist = float.MaxValue;
+
+        foreach (var segment in m_segments)
+        {
+            float newDist = Vector2.Distance(segment.transform.position, position);
+
+            if (!segment.gameObject.activeInHierarchy)
+                continue;
+
+            if (newDist < dist)
+            {
+                hitSegment = segment.gameObject;
+                dist = newDist;
+            }
+        }
+
+        if (hitSegment == m_head)
+        {
+            for (int i = 1; i < m_segments.Length; ++i)
+            {
+                GameObject seg = m_segments[i].gameObject;
+
+                if (seg.activeInHierarchy && seg != m_tail)
+                {
+                    return seg;
+                }
+            }
+        }
+        else if (hitSegment == m_tail)
+        {
+            for (int i = m_segments.Length - 1; i > 0; --i)
+            {
+                GameObject seg = m_segments[i].gameObject;
+
+                if (seg.activeInHierarchy && seg != m_head)
+                {
+                    return seg;
+                }
+            }
+        }
+
+        return hitSegment;
+    }
+
     public void HitByProjectile(Vector2 position)
     {
-        Debug.Log("Oh FUCK TYOSADUN YA HIT ME !?!??!");
+        GameObject hitSegment = GetClosestSegment(position);
+
+        if (m_health > 0 && hitSegment != m_head && hitSegment != m_tail)
+        {
+            m_health--;
+            hitSegment.SetActive(false);
+        }
+        else
+        {
+            m_health--;
+            m_head.SetActive(false);
+            m_tail.SetActive(false);
+            m_endSequence.StartEnding();
+        }
     }
 
     private void Awake()
     {
         m_playerCharacter = FindObjectOfType<PlayerCharacter>();
+        m_endSequence = FindObjectOfType<EndSequence>();
+        m_health = m_segments.Length - 2; // Subtract 2 for head and tail
     }
 
     private void Start()
@@ -54,6 +121,11 @@ public class Dragon : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Dead
+        if (m_health < 0)
+            return;
+
+        // Alive
         m_currentDistance += m_speed * Time.fixedDeltaTime;
 
         if (m_currentDistance > Curve.Length)
@@ -88,12 +160,8 @@ public class Dragon : MonoBehaviour
 
         var hit = Physics2D.Raycast(ray.origin, ray.direction, 100.0f, LayerMask.GetMask("Level"));
 
-        Debug.DrawRay(ray.origin, playerPos - headPos, Color.red);
-
         if (hit.collider == null)
             return true;
-
-        Debug2.DrawArrow(headPos, hit.point, Color.green);
 
         float distanceToPlayer = Vector3.Distance(headPos, playerPos);
         float distanceToHit = hit.distance;

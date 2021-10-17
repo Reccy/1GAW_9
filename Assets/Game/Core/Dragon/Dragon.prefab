@@ -72,6 +72,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_t: 0
   m_head: {fileID: 2019313870732026957}
+  m_tail: {fileID: 1154210867543742958}
   m_currentSegment: {fileID: 0}
   m_segments:
   - {fileID: 5754154760659450724}
@@ -1309,6 +1310,11 @@ PrefabInstance:
 --- !u!4 &5754154760659450724 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1080154708130977872, guid: a0c2ac7c387460b42bd64f99b56134e2, type: 3}
+  m_PrefabInstance: {fileID: 4694905577135301428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1154210867543742958 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5846572903741618906, guid: a0c2ac7c387460b42bd64f99b56134e2, type: 3}
   m_PrefabInstance: {fileID: 4694905577135301428}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5759334234049611871
